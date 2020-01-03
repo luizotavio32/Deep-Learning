@@ -3,7 +3,7 @@ import keras
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, accuracy_score
 from keras.models import Sequential
-from keras.layers import Dense
+from keras.layers import Dense, Dropout
 from keras.wrappers.scikit_learn import KerasClassifier
 from sklearn.model_selection import cross_val_score
 
@@ -19,8 +19,10 @@ def nova_rede():
     neural_net = Sequential()
     neural_net.add(Dense(units = 16, activation = 'relu', 
                         kernel_initializer = 'random_uniform', input_dim = 30))
+    neural_net.add(Dropout(0.2))
     neural_net.add(Dense(units = 16, activation = 'relu', 
                        kernel_initializer = 'random_uniform'))
+    neural_net.add(Dropout(0.2))
     neural_net.add(Dense(units = 1, activation = 'sigmoid'))
     otimizador = keras.optimizers.Adam(lr = 0.001, decay = 0.0001, clipvalue = 0.5)
     neural_net.compile(optimizer = otimizador, loss = 'binary_crossentropy', metrics = ['binary_accuracy'])
