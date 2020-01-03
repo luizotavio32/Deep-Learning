@@ -54,7 +54,6 @@ pred = (pred > 0.5)
 
 
 
-
 ##################### avaliação da rede neural (acurácia, matriz de confusão, etc) #####################
 precisao = accuracy_score(classe_teste, pred)
 matriz = confusion_matrix(classe_teste, pred)
