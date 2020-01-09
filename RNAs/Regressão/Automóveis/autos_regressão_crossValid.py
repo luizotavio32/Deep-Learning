@@ -3,8 +3,6 @@ from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from keras.models import Sequential
 from keras.layers import Dense, Dropout
-from keras.wrappers.scikit_learn import KerasRegressor
-from sklearn.model_selection import cross_val_score
 
 base = pd.read_csv('autos.csv', encoding='ISO-8859-1')
 base = base.drop('dateCrawled', axis = 1)
@@ -49,18 +47,13 @@ preco_real = base.iloc[:, 0].values
 onehot = ColumnTransformer(transformers=[("OneHot", OneHotEncoder(),[0,1,3,5,8,9,10])], remainder='passthrough')     
 previsores = onehot.fit_transform(previsores).toarray()
 
-def criar_rede():
-    regressor = Sequential()
-    regressor.add(Dense(units = 158, activation='relu', input_dim = 316))
-    regressor.add(Dropout(0.2))
-    regressor.add(Dense(units = 158, activation='relu'))
-    regressor.add(Dropout(0.2))
-    regressor.add(Dense(units = 1, activation='linear'))
-    regressor.compile(loss = 'mean_absolute_error', optimizer ='adam', metrics=['mean_absolute_error'])
-    regressor.fit(previsores,preco_real, batch_size=300, epochs=100)
-    return regressor
+regressor = Sequential()
+regressor.add(Dense(units = 158, activation='relu', input_dim = 316))
+regressor.add(Dropout(0.2))
+regressor.add(Dense(units = 158, activation='relu'))
+regressor.add(Dropout(0.2))
+regressor.add(Dense(units = 1, activation='linear'))
+regressor.compile(loss = 'mean_absolute_error', optimizer ='adam', metrics=['mean_absolute_error'])
+regressor.fit(previsores,preco_real, batch_size=300, epochs=100)
 
-regressor = KerasRegressor(build_fn = criar_rede, epochs=100, batch_size = 300)
-
-result = cross_val_score(estimator = regressor, X=previsores, y =preco_real, cv=10, scoring='neg_mean_absolute_error')
-
+prev = regressor.predict(previsores) # ISSO É ERRADO prevendo com a mesma base de treino
